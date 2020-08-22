@@ -31,7 +31,7 @@ namespace GameEngine.Tests
         [Fact]
         public void CalculateFullName()
         {
-            
+
 
             _sut.FirstName = "Sarah";
             _sut.LastName = "Smith";
@@ -42,7 +42,7 @@ namespace GameEngine.Tests
         [Fact]
         public void HaveFullNameStartingWithFirstName()
         {
-            
+
 
             _sut.FirstName = "Sarah";
             _sut.LastName = "Smith";
@@ -52,7 +52,7 @@ namespace GameEngine.Tests
         [Fact]
         public void HaveFullNameEndingWithLastName()
         {
-            
+
 
             _sut.LastName = "Smith";
 
@@ -62,7 +62,7 @@ namespace GameEngine.Tests
         [Fact]
         public void CalculateFullName_IgnoreCaseAssertExample()
         {
-            
+
 
             _sut.FirstName = "SARAH";
             _sut.LastName = "SMITH";
@@ -73,7 +73,7 @@ namespace GameEngine.Tests
         [Fact]
         public void CalculateFullName_SubstringAssertExample()
         {
-            
+
 
             _sut.FirstName = "Sarah";
             _sut.LastName = "Smith";
@@ -84,7 +84,7 @@ namespace GameEngine.Tests
         [Fact]
         public void CalculateFullNameWithTitleCase()
         {
-            
+
 
             _sut.FirstName = "Sarah";
             _sut.LastName = "Smith";
@@ -95,21 +95,21 @@ namespace GameEngine.Tests
         [Fact]
         public void StartWithDefaultHealth()
         {
-            
+
 
             Assert.Equal(100, _sut.Health);
         }
         [Fact]
         public void StartWithDefaultHealth_NotEqualExample()
         {
-            
+
 
             Assert.NotEqual(0, _sut.Health);
         }
         [Fact]
         public void IncreaseHealthAfterSleeping()
         {
-            
+
 
             _sut.Sleep(); // Expect increase between 1 to 100 inclusive
 
@@ -120,7 +120,7 @@ namespace GameEngine.Tests
         [Fact]
         public void NotHaveNickNameByDefault()
         {
-            
+
 
             Assert.Null(_sut.Nickname);
         }
@@ -128,7 +128,7 @@ namespace GameEngine.Tests
         [Fact]
         public void HaveALongBow()
         {
-            
+
 
             Assert.Contains("Long Bow", _sut.Weapons);
         }
@@ -136,7 +136,7 @@ namespace GameEngine.Tests
         [Fact]
         public void NotHaveAStaffOfWonder()
         {
-            
+
 
             Assert.DoesNotContain("Staff Of Wonder", _sut.Weapons);
         }
@@ -144,7 +144,7 @@ namespace GameEngine.Tests
         [Fact]
         public void HaveAtLeastOneKindOfSword()
         {
-            
+
 
             Assert.Contains(_sut.Weapons, weapon => weapon.Contains("Sword"));
         }
@@ -152,7 +152,7 @@ namespace GameEngine.Tests
         [Fact]
         public void HaveAllExpectedWeapons()
         {
-            
+
 
             var expectedWeapons = new[]
             {
@@ -167,10 +167,83 @@ namespace GameEngine.Tests
         [Fact]
         public void HaveNoEmptyDefaultWeapons()
         {
-            
+
 
             Assert.All(_sut.Weapons, weapon => Assert.False(string.IsNullOrWhiteSpace(weapon)));
         }
+
+        //[Fact]
+        //public void TakeZeroDamage()
+        //{
+        //    _sut.TakeDamage(0);
+
+        //    Assert.Equal(100, _sut.Health);
+        //}
+
+        //[Fact]
+        //public void TakeSmallDamage()
+        //{
+        //    _sut.TakeDamage(1);
+
+        //    Assert.Equal(99, _sut.Health);
+        //}
+
+        //[Fact]
+        //public void TakeMediumDamage()
+        //{
+        //    _sut.TakeDamage(50);
+
+        //    Assert.Equal(50, _sut.Health);
+        //}
+
+        //[Fact]
+        //public void HaveMinimum1Health()
+        //{
+        //    _sut.TakeDamage(101);
+
+        //    Assert.Equal(1, _sut.Health);
+        //}
+
+        [Theory]
+        [InlineData(0, 100)]
+        [InlineData(1, 99)]
+        [InlineData(50, 50)]
+        [InlineData(101, 1)]
+        public void InlineTakeDamage(int damage, int expectedHealth)
+        {
+            _sut.TakeDamage(damage);
+
+            Assert.Equal(expectedHealth, _sut.Health);
+        }
+
+        [Theory]
+        [MemberData(nameof(InternalHealthDamageTestData.TestData), MemberType = typeof(InternalHealthDamageTestData))]
+        public void InternalTakeDamage(int damage, int expectedHealth)
+        {
+            _sut.TakeDamage(damage);
+
+            Assert.Equal(expectedHealth, _sut.Health);
+        }
+
+        [Theory]
+        [MemberData(nameof(ExternalHealthDamageTestData.TestData), MemberType = typeof(ExternalHealthDamageTestData))]
+        public void ExternalTakeDamage(int damage, int expectedHealth)
+        {
+            _sut.TakeDamage(damage);
+
+            Assert.Equal(expectedHealth, _sut.Health);
+        }
+
+
+        [Theory]
+        [HealthDamageData]
+        public void AttributeTakeDamage(int damage, int expectedHealth)
+        {
+            _sut.TakeDamage(damage);
+
+            Assert.Equal(expectedHealth, _sut.Health);
+        }
+
 
     }
 }
